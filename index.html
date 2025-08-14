@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DISC Personality Quiz</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: #f4f7f9;
+        color: #333;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+      }
+      .quiz-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #2c3e50;
+      }
+      .question-block {
+        margin-bottom: 25px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #fafafa;
+      }
+      .question-text {
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+      }
+      .options-label {
+        display: block;
+        margin-bottom: 10px;
+        padding: 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .options-label:hover {
+        background-color: #e9ecef;
+      }
+      input[type="radio"] {
+        margin-right: 10px;
+      }
+      .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .submit-btn:hover {
+        background-color: #2980b9;
+      }
+      #results {
+        margin-top: 40px;
+        padding: 30px;
+        border-radius: 8px;
+        background-color: #eaf4fb;
+        border: 1px solid #c1dff0;
+        display: none; /* Initially hidden */
+      }
+      #results h2 {
+        color: #2980b9;
+      }
+      .result-score {
+        font-size: 1.1em;
+        margin: 5px 0;
+      }
+      .result-description {
+        margin-top: 20px;
+      }
+      .result-description h3 {
+        margin-bottom: 10px;
+      }
+      .error-message {
+        color: #c0392b;
+        text-align: center;
+        padding: 10px;
+        display: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <h1>DISC Personality Quiz</h1>
+      <p style="text-align: center">
+        For each question, select the option that sounds most like you.
+      </p>
+
+      <form id="discQuizForm"></form>
+
+      <p id="errorMessage" class="error-message">
+        Please answer all questions before submitting.
+      </p>
+      <button type="button" class="submit-btn" onclick="calculateResults()">
+        Show My Results
+      </button>
+
+      <div id="results">
+        <h2>Your Results</h2>
+        <div id="scoreDisplay"></div>
+        <div id="resultDescription" class="result-description"></div>
+      </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          question: "When faced with a challenge, I am most likely to:",
+          options: {
+            D: "Take immediate control and focus on a solution.",
+            I: "Discuss it with others to find a creative approach.",
+            S: "Support the team and ensure everyone is okay.",
+            C: "Analyze all the data before making a move.",
+          },
+        },
+        {
+          question: "My ideal work environment is:",
+          options: {
+            I: "Social, collaborative, and full of energy.",
+            S: "Stable, predictable, and harmonious.",
+            C: "Quiet, organized, and allows for deep focus.",
+            D: "Fast-paced, competitive, and results-driven.",
+          },
+        },
+        {
+          question: "When making decisions, I primarily rely on:",
+          options: {
+            C: "Logic, facts, and proven methods.",
+            D: "My gut instinct and the desire to win.",
+            I: "My feelings and input from people I trust.",
+            S: "Consensus and ensuring the decision is safe.",
+          },
+        },
+        {
+          question: "People would describe me as:",
+          options: {
+            S: "Patient and a good listener.",
+            C: "Systematic and precise.",
+            D: "Direct and decisive.",
+            I: "Enthusiastic and persuasive.",
+          },
+        },
+        {
+          question: "In a team project, I enjoy:",
+          options: {
+            D: "Leading the group and assigning tasks.",
+            I: "Motivating others and celebrating wins.",
+            S: "Helping coworkers and fostering cooperation.",
+            C: "Managing the quality and accuracy of the work.",
+          },
+        },
+        {
+          question: "When communicating, I tend to be:",
+          options: {
+            I: "Talkative, expressive, and optimistic.",
+            S: "Calm, agreeable, and gentle.",
+            C: "Formal, precise, and data-focused.",
+            D: "To the point, blunt, and focused on action.",
+          },
+        },
+        {
+          question: "My biggest fear is:",
+          options: {
+            D: "Being taken advantage of or losing control.",
+            I: "Social rejection or disapproval.",
+            S: "Sudden change and instability.",
+            C: "Criticism of my work or being wrong.",
+          },
+        },
+        {
+          question: "I am most motivated by:",
+          options: {
+            C: "Opportunities to gain knowledge and ensure quality.",
+            D: "New challenges and achieving results.",
+            I: "Public recognition and social connection.",
+            S: "Security and sincere appreciation.",
+          },
+        },
+        {
+          question: "Under pressure, I might become:",
+          options: {
+            S: "Too accommodating and hesitant to act.",
+            C: "Overly critical and withdrawn.",
+            D: "Impatient and demanding.",
+            I: "Disorganized and overly emotional.",
+          },
+        },
+        {
+          question: "I prefer my daily routine to be:",
+          options: {
+            I: "Varied, spontaneous, and with lots of interaction.",
+            S: "Consistent, predictable, and structured.",
+            C: "Well-defined with clear, logical tasks.",
+            D: "Filled with challenges and opportunities for progress.",
+          },
+        },
+        {
+          question: "When learning something new, I prefer to:",
+          options: {
+            D: "Jump in and learn by doing.",
+            I: "Participate in a group discussion or workshop.",
+            S: "Have a patient mentor guide me step-by-step.",
+            C: "Read the manual and understand the theory first.",
+          },
+        },
+        {
+          question: "My desk or workspace is typically:",
+          options: {
+            C: "Highly organized, neat, and functional.",
+            D: "Functional, but can be cluttered with current projects.",
+            I: "Full of personal items, pictures, and inspiring things.",
+            S: "Comfortable, calm, and tidy.",
+          },
+        },
+        {
+          question: "When there is a conflict, I usually:",
+          options: {
+            S: "Try to smooth things over and find common ground.",
+            C: "Avoid emotional arguments and focus on the facts.",
+            D: "Address it directly to get a resolution.",
+            I: "Try to lighten the mood and talk it out.",
+          },
+        },
+        {
+          question: "I feel most successful when:",
+          options: {
+            D: "I've overcome a major obstacle.",
+            I: "I've inspired and influenced a group of people.",
+            S: "I've contributed to a harmonious team effort.",
+            C: "I've produced a perfect, high-quality result.",
+          },
+        },
+        {
+          question: "When listening to others, I am:",
+          options: {
+            I: "Looking for ways to connect and share my own stories.",
+            S: "Patiently hearing them out and offering support.",
+            C: "Analyzing their points for accuracy and logic.",
+            D: "Getting impatient if they don't get to the point.",
+          },
+        },
+        {
+          question: "The rules are:",
+          options: {
+            C: "Important for ensuring consistency and quality.",
+            D: "Guidelines that can be bent to achieve a goal.",
+            I: "Less important than keeping people happy.",
+            S: "Important for maintaining stability and order.",
+          },
+        },
+        {
+          question: "My pace of work is generally:",
+          options: {
+            D: "Fast and decisive.",
+            I: "Energetic and fast, but I can get sidetracked.",
+            S: "Steady and methodical.",
+            C: "Cautious and deliberate.",
+          },
+        },
+        {
+          question: "I am energized by:",
+          options: {
+            S: "Helping people and collaborating in a stable team.",
+            C: "Solving complex problems on my own.",
+            D: "Competition and making quick decisions.",
+            I: "Social events and meeting new people.",
+          },
+        },
+        {
+          question: "When giving feedback, I am:",
+          options: {
+            I: "Enthusiastic and focus on the positives.",
+            S: "Gentle, tactful, and avoid confrontation.",
+            C: "Specific, objective, and focused on the data.",
+            D: "Direct, straightforward, and honest.",
+          },
+        },
+        {
+          question: "My general outlook on life is:",
+          options: {
+            C: "Realistic and analytical.",
+            D: "Confident and goal-oriented.",
+            I: "Optimistic and people-focused.",
+            S: "Peaceful and content.",
+          },
+        },
+      ];
+
+      const descriptions = {
+        D: {
+          title: "Dominance (D)",
+          description:
+            "You are direct, decisive, and results-oriented. You thrive on challenge and competition, and you aren't afraid to take charge of a situation. You are a natural leader who is focused on the bottom line and achieving goals quickly and effectively.",
+        },
+        I: {
+          title: "Influence (I)",
+          description:
+            "You are enthusiastic, charming, and optimistic. You are a people-person who thrives in social situations and enjoys collaborating with others. Your energy and persuasiveness make you great at motivating and inspiring the people around you.",
+        },
+        S: {
+          title: "Steadiness (S)",
+          description:
+            "You are calm, patient, and supportive. You value stability, harmony, and cooperation. You are an excellent team player and a loyal friend, known for your dependability and your ability to listen and provide sincere support to others.",
+        },
+        C: {
+          title: "Conscientiousness (C)",
+          description:
+            "You are analytical, precise, and detail-oriented. You value accuracy, logic, and quality in everything you do. You are a systematic thinker who excels at planning, problem-solving, and ensuring that tasks are completed correctly and to a high standard.",
+        },
+      };
+
+      const quizForm = document.getElementById("discQuizForm");
+      questions.forEach((q, index) => {
+        const questionBlock = document.createElement("div");
+        questionBlock.className = "question-block";
+
+        const questionText = document.createElement("p");
+        questionText.className = "question-text";
+        questionText.textContent = `${index + 1}. ${q.question}`;
+        questionBlock.appendChild(questionText);
+
+        for (const type in q.options) {
+          const label = document.createElement("label");
+          label.className = "options-label";
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `q${index}`;
+          radio.value = type;
+          radio.required = true;
+
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(` ${q.options[type]}`));
+          questionBlock.appendChild(label);
+        }
+        quizForm.appendChild(questionBlock);
+      });
+
+      function calculateResults() {
+        const scores = { D: 0, I: 0, S: 0, C: 0 };
+        const totalQuestions = questions.length;
+        let answeredQuestions = 0;
+
+        for (let i = 0; i < totalQuestions; i++) {
+          const selectedOption = document.querySelector(
+            `input[name="q${i}"]:checked`
+          );
+          if (selectedOption) {
+            scores[selectedOption.value]++;
+            answeredQuestions++;
+          }
+        }
+
+        const errorMessage = document.getElementById("errorMessage");
+        if (answeredQuestions < totalQuestions) {
+          errorMessage.style.display = "block";
+          return;
+        }
+        errorMessage.style.display = "none";
+
+        let primaryTrait = "D";
+        let highestScore = 0;
+        for (const type in scores) {
+          if (scores[type] > highestScore) {
+            highestScore = scores[type];
+            primaryTrait = type;
+          }
+        }
+
+        displayResults(scores, primaryTrait);
+      }
+
+      function displayResults(scores, primaryTrait) {
+        const resultsDiv = document.getElementById("results");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const resultDescription = document.getElementById("resultDescription");
+
+        scoreDisplay.innerHTML = `
+                <p class="result-score"><strong>Dominance (D):</strong> ${scores.D}</p>
+                <p class="result-score"><strong>Influence (I):</strong> ${scores.I}</p>
+                <p class="result-score"><strong>Steadiness (S):</strong> ${scores.S}</p>
+                <p class="result-score"><strong>Conscientiousness (C):</strong> ${scores.C}</p>
+            `;
+
+        const primaryDescription = descriptions[primaryTrait];
+        resultDescription.innerHTML = `
+                <h3>Your primary trait appears to be: ${primaryDescription.title}</h3>
+                <p>${primaryDescription.description}</p>
+            `;
+
+        resultsDiv.style.display = "block";
+        resultsDiv.scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
