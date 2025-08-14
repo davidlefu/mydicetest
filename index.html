@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DISC Personality Quiz</title>
+    <title>Expanded DISC Personality Assessment</title>
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -80,15 +80,18 @@
       #results h2 {
         color: #2980b9;
       }
+      .result-section h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 5px;
+        margin-top: 25px;
+      }
       .result-score {
         font-size: 1.1em;
         margin: 5px 0;
       }
-      .result-description {
-        margin-top: 20px;
-      }
-      .result-description h3 {
-        margin-bottom: 10px;
+      .result-description p {
+        text-align: justify;
       }
       .error-message {
         color: #c0392b;
@@ -101,9 +104,10 @@
   </head>
   <body>
     <div class="quiz-container">
-      <h1>DISC Personality Quiz</h1>
+      <h1>Expanded DISC Personality Assessment</h1>
       <p style="text-align: center">
-        For each question, select the option that sounds most like you.
+        For each of the 40 questions, please select the option that sounds most
+        like you.
       </p>
 
       <form id="discQuizForm"></form>
@@ -112,11 +116,11 @@
         Please answer all questions before submitting.
       </p>
       <button type="button" class="submit-btn" onclick="calculateResults()">
-        Show My Results
+        Generate My Detailed Report
       </button>
 
       <div id="results">
-        <h2>Your Results</h2>
+        <h2>Your Personality Report</h2>
         <div id="scoreDisplay"></div>
         <div id="resultDescription" class="result-description"></div>
       </div>
@@ -124,6 +128,7 @@
 
     <script>
       const questions = [
+        // Original 20
         {
           question: "When faced with a challenge, I am most likely to:",
           options: {
@@ -304,28 +309,253 @@
             S: "Peaceful and content.",
           },
         },
+        // New 20
+        {
+          question: "When a project is failing, my first instinct is to:",
+          options: {
+            D: "Identify the problem and take decisive action to fix it.",
+            I: "Rally the team to boost morale and brainstorm new ideas.",
+            S: "Check in with team members to see how they are coping.",
+            C: "Re-evaluate the entire plan to find the logical flaw.",
+          },
+        },
+        {
+          question: "I enjoy a good debate because:",
+          options: {
+            I: "It's a lively way to exchange ideas.",
+            C: "It helps to refine arguments and find the truth.",
+            D: "I like to win and prove my point.",
+            S: "I don't enjoy debates; I prefer harmony.",
+          },
+        },
+        {
+          question: "If I had an extra hour in my day, I would spend it:",
+          options: {
+            S: "Connecting with a friend or family member.",
+            D: "Getting ahead on my most important tasks.",
+            I: "Networking or engaging in a fun social activity.",
+            C: "Organizing something or learning a new skill.",
+          },
+        },
+        {
+          question: "Regarding risk, I am:",
+          options: {
+            C: "Very cautious; I need to analyze all potential outcomes.",
+            S: "Hesitant; I prefer safe and proven paths.",
+            D: "Willing to take calculated risks to achieve big wins.",
+            I: "Optimistic; I focus more on the potential rewards.",
+          },
+        },
+        {
+          question: "When receiving criticism, I prefer it to be:",
+          options: {
+            S: "Delivered gently and with encouragement.",
+            C: "Based on objective facts and standards.",
+            I: "Balanced with positive feedback and praise.",
+            D: "Direct, honest, and to the point.",
+          },
+        },
+        {
+          question: "A good leader is someone who:",
+          options: {
+            I: "Inspires and motivates people with a compelling vision.",
+            S: "Supports their team and creates a secure environment.",
+            C: "Provides clear standards and is consistently fair.",
+            D: "Sets a clear direction and drives for results.",
+          },
+        },
+        {
+          question: "My approach to planning a vacation is:",
+          options: {
+            C: "A detailed itinerary with researched activities.",
+            I: "A loose idea of a destination with lots of spontaneity.",
+            S: "A relaxing trip to a familiar and comfortable place.",
+            D: "An action-packed trip with goals and challenges.",
+          },
+        },
+        {
+          question: "If a process is inefficient, I am likely to:",
+          options: {
+            D: "Change it immediately to make it work better.",
+            C: "Design a new, more logical system from scratch.",
+            S: "Worry about how the change will affect my colleagues.",
+            I: "Complain about it but get distracted before fixing it.",
+          },
+        },
+        {
+          question: "I prefer to build relationships that are:",
+          options: {
+            S: "Deep, stable, and long-lasting.",
+            I: "Numerous, friendly, and socially engaging.",
+            D: "Strategic and mutually beneficial.",
+            C: "Respectful and based on intellectual connection.",
+          },
+        },
+        {
+          question: "I am at my worst when I feel:",
+          options: {
+            D: "Powerless or that my authority is challenged.",
+            I: "Ignored, disliked, or left out of the group.",
+            S: "Forced into a high-conflict or unpredictable situation.",
+            C: "That my work is sloppy or my competence is doubted.",
+          },
+        },
+        {
+          question: "My problem-solving style is to:",
+          options: {
+            C: "Gather all the facts first.",
+            D: "Take charge and delegate solutions.",
+            I: "Brainstorm with a group.",
+            S: "Offer support and facilitate discussion.",
+          },
+        },
+        {
+          question: "Change is something I see as:",
+          options: {
+            I: "An exciting opportunity for new experiences.",
+            D: "A chance to innovate and get better results.",
+            S: "Potentially disruptive and unsettling.",
+            C: "Something to be managed carefully with a clear plan.",
+          },
+        },
+        {
+          question: "I would rather be seen as:",
+          options: {
+            D: "Competent.",
+            I: "Popular.",
+            S: "Dependable.",
+            C: "Correct.",
+          },
+        },
+        {
+          question: "In a social gathering, you'll find me:",
+          options: {
+            I: "In the center of a group, telling stories.",
+            S: "Having a quiet one-on-one conversation.",
+            C: "Observing from the sidelines.",
+            D: "Discussing goals or networking with a purpose.",
+          },
+        },
+        {
+          question: "My email communication style is typically:",
+          options: {
+            C: "Detailed, precise, and well-formatted.",
+            D: "Short, direct, and action-oriented.",
+            I: "Friendly, informal, and uses emojis.",
+            S: "Polite, considerate, and thoughtful.",
+          },
+        },
+        {
+          question: "When I have to follow instructions, I:",
+          options: {
+            S: "Follow them carefully to ensure I do it right.",
+            C: "Analyze them to see if they can be improved.",
+            D: "Prefer to get the gist and figure out the rest myself.",
+            I: "Might get distracted and miss some of the details.",
+          },
+        },
+        {
+          question: "When working on a long-term project, I'm best at:",
+          options: {
+            S: "Maintaining a consistent effort over time.",
+            C: "Ensuring every detail meets the quality standard.",
+            D: "Keeping the team focused on the end goal.",
+            I: "Generating enthusiasm and momentum at the start.",
+          },
+        },
+        {
+          question: "The phrase that best describes me is:",
+          options: {
+            D: "Let's just do it.",
+            I: "Let's do it together.",
+            S: "Let's keep things the way they are.",
+            C: "Let's do it the right way.",
+          },
+        },
+        {
+          question: "I feel drained by:",
+          options: {
+            D: "Repetitive tasks with no clear outcome.",
+            I: "Working alone on analytical tasks for too long.",
+            S: "Dealing with aggressive people or constant conflict.",
+            C: "Having to make quick decisions with incomplete data.",
+          },
+        },
+        {
+          question: "My primary value is:",
+          options: {
+            I: "Enthusiasm.",
+            S: "Harmony.",
+            C: "Accuracy.",
+            D: "Results.",
+          },
+        },
       ];
 
       const descriptions = {
         D: {
           title: "Dominance (D)",
-          description:
-            "You are direct, decisive, and results-oriented. You thrive on challenge and competition, and you aren't afraid to take charge of a situation. You are a natural leader who is focused on the bottom line and achieving goals quickly and effectively.",
+          report: `
+                    <div class="result-section">
+                        <h3>Your Primary Personality: The Driver</h3>
+                        <p>As an individual with a high 'D' personality, you are a force of nature—confident, assertive, and intensely focused on results. You see the world in terms of challenges to be overcome and goals to be achieved. You are a natural-born leader, unafraid to take control, make tough decisions, and drive projects forward. Your communication is direct, concise, and to the point; you value efficiency over pleasantries and action over discussion. People look to you when a situation calls for a firm hand and a clear direction. You are motivated by competition and the opportunity to win, constantly pushing yourself and others to achieve new heights. Your greatest strengths lie in your decisiveness, your unwavering self-confidence, and your relentless pursuit of objectives. You don't get bogged down by analysis paralysis; instead, you make a decision and move on, trusting your instincts to guide you toward success. You are the engine of any team, providing the momentum needed to get things done.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Potential Areas for Improvement</h3>
+                        <p>Your drive for results, while a significant strength, can sometimes lead to impatience and a lack of sensitivity towards others' feelings. You move so fast that you may not always take the time to build consensus or listen to alternative viewpoints, potentially alienating team members who feel unheard or steamrolled. You may have a tendency to be overly blunt, and your direct feedback can sometimes be perceived as harsh or critical, even when not intended that way. To grow, focus on practicing active listening. Make a conscious effort to pause before responding and genuinely consider the perspectives of others. Try to temper your directness with a dose of empathy, acknowledging the efforts and feelings of your colleagues. Learning to delegate not just tasks but also authority can empower your team and build trust. Remember that celebrating team successes and showing appreciation can be just as important as driving for the next objective. By developing your patience and people skills, you can become a more effective and inspirational leader, not just a demanding one.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Environments and Situations to Be Mindful Of</h3>
+                        <p>You will likely feel frustrated and constrained in environments that are slow-moving, bureaucratic, or lack clear goals. Roles that require a great deal of routine, repetitive work with little room for independent decision-making can be draining for you. Be wary of situations where your authority is constantly challenged or where you are micromanaged, as this directly conflicts with your need for control and autonomy. Highly emotional or conflict-averse settings where directness is frowned upon can also be challenging, as you may feel you have to walk on eggshells. Similarly, projects that are stuck in endless loops of discussion and analysis without moving toward action will quickly test your patience. To thrive, seek out roles that give you a high degree of control over your own work, offer clear opportunities for advancement, and allow you to tackle significant challenges. You are at your best when you can see a direct line between your efforts and a tangible outcome, and when you are empowered to make things happen.</p>
+                    </div>`,
         },
         I: {
           title: "Influence (I)",
-          description:
-            "You are enthusiastic, charming, and optimistic. You are a people-person who thrives in social situations and enjoys collaborating with others. Your energy and persuasiveness make you great at motivating and inspiring the people around you.",
+          report: `
+                    <div class="result-section">
+                        <h3>Your Primary Personality: The Inspirer</h3>
+                        <p>As a high 'I' individual, you are the social glue and the motivational spirit of any group. You are optimistic, outgoing, and brimming with infectious enthusiasm. Your world is built on connections, and you have a natural talent for persuasion and building relationships. You are a gifted communicator, able to charm and inspire others with your stories and your positive outlook. You thrive in collaborative environments where you can brainstorm, share ideas, and work with others. People are drawn to your energy and charisma, and you excel at creating an atmosphere of fun and excitement. Your motivation comes from social recognition, public praise, and the feeling of being liked and accepted. You are a natural networker, and your greatest strengths are your ability to influence others and to build a positive, energetic team culture. You see possibilities everywhere and are fantastic at getting new projects off the ground, rallying support, and generating the initial momentum needed for success. You bring the "why" to any project, inspiring others to believe in the vision.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Potential Areas for Improvement</h3>
+                        <p>Your love for social interaction and your focus on the big picture can sometimes come at the expense of details and follow-through. You might be fantastic at starting projects but lose interest when it comes to the less glamorous, more systematic tasks required to finish them. Your optimism can occasionally lead you to overpromise on deliverables or underestimate the time and effort required to complete a task. Because you are motivated by social approval, you may avoid delivering difficult feedback or engaging in necessary conflict, preferring to keep things positive. To enhance your effectiveness, work on developing your organizational skills. Use tools like to-do lists and calendars to track commitments and ensure nothing falls through the cracks. Before agreeing to a new task, take a moment to realistically assess the details and deadlines. Practice holding yourself and others accountable, even when it involves uncomfortable conversations. By balancing your natural enthusiasm with a structured approach to execution, you can ensure that your brilliant ideas are not just conceived but are also brought to successful completion.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Environments and Situations to Be Mindful Of</h3>
+                        <p>You are likely to feel stifled and unhappy in environments that are isolating, overly formal, or bogged down by rigid rules and procedures. Roles that involve long hours of solitary work, such as detailed data analysis or proofreading, can quickly drain your energy. Be mindful of situations that lack social interaction or opportunities for creative expression. A pessimistic or overly critical team culture will clash with your optimistic nature and diminish your motivation. You may also struggle in roles where your contributions are not seen or acknowledged, as you thrive on feedback and recognition. Avoid positions where the primary focus is on maintaining existing systems rather than innovating and exploring new ideas. To flourish, seek out roles that allow for collaboration, brainstorming, and interaction with a wide variety of people. You are at your best in dynamic, fast-paced environments where you can use your communication skills to build relationships, persuade stakeholders, and champion new initiatives. Look for opportunities where your enthusiasm is valued and where you can be a public face for your team or organization.</p>
+                    </div>`,
         },
         S: {
           title: "Steadiness (S)",
-          description:
-            "You are calm, patient, and supportive. You value stability, harmony, and cooperation. You are an excellent team player and a loyal friend, known for your dependability and your ability to listen and provide sincere support to others.",
+          report: `
+                    <div class="result-section">
+                        <h3>Your Primary Personality: The Supporter</h3>
+                        <p>As a person with a high 'S' personality, you are the bedrock of any team—calm, patient, and exceptionally dependable. You bring a sense of stability and harmony to your environment. You are a phenomenal listener, demonstrating genuine empathy and a sincere desire to support others. Your approach is methodical and consistent; you prefer a predictable pace and a stable work environment where you can build strong, long-lasting relationships. People trust you implicitly because of your loyalty and your non-judgmental nature. You are motivated by security, sincere appreciation, and the opportunity to cooperate within a team. While you may not seek the spotlight, your contribution is vital for maintaining team cohesion and ensuring tasks are completed reliably and with care. Your greatest strengths are your patience, your ability to create a harmonious atmosphere, and your unwavering commitment to the team's well-being. You are the one people turn to for a steady hand and a supportive ear, and you excel at creating processes that work for everyone.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Potential Areas for Improvement</h3>
+                        <p>Your desire for harmony and stability can sometimes lead to a resistance to change and an avoidance of necessary conflict. You may be so focused on accommodating others that you neglect your own needs or hesitate to speak up with a dissenting opinion, even when you have a valid point. This can lead to your ideas being overlooked or, in some cases, to resentment building up over time. You may find it difficult to set firm boundaries or say "no" for fear of disappointing others. To grow, practice embracing change by focusing on the logical benefits it can bring to the team you care so much about. Start small by expressing your opinion on low-stakes issues to build your confidence. Learn to view conflict not as a personal attack, but as a path to a stronger solution. It's important to remember that your perspective is valuable and that offering constructive disagreement can be a form of support in itself. By learning to be more assertive when necessary, you can ensure your own well-being and contribute even more effectively to the long-term success of your team.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Environments and Situations to Be Mindful Of</h3>
+                        <p>You will likely find highly chaotic, unpredictable, and competitive environments to be extremely stressful. Roles that involve constant, abrupt changes, high-pressure deadlines, and aggressive competition can quickly deplete your energy. Be mindful of situations that are rife with interpersonal conflict or where you are forced to make snap decisions without time for consideration. A work culture that values confrontation over collaboration will feel unnatural and uncomfortable for you. You may also struggle in leadership positions that require you to enforce unpopular rules or frequently deliver critical feedback without a supportive framework. To thrive, seek out environments that are stable, predictable, and value teamwork and cooperation. You excel in roles that allow you to become a specialist and provide consistent support, such as in customer service, human resources, teaching, or project management within a well-defined system. You are at your best when you are part of a close-knit, collaborative team and can see how your work directly helps and supports other people.</p>
+                    </div>`,
         },
         C: {
           title: "Conscientiousness (C)",
-          description:
-            "You are analytical, precise, and detail-oriented. You value accuracy, logic, and quality in everything you do. You are a systematic thinker who excels at planning, problem-solving, and ensuring that tasks are completed correctly and to a high standard.",
+          report: `
+                    <div class="result-section">
+                        <h3>Your Primary Personality: The Analyst</h3>
+                        <p>As a high 'C' individual, you are the guardian of quality and accuracy. You are analytical, precise, and systematic in your approach to everything you do. Your world is governed by logic, data, and standards, and you are deeply motivated by the pursuit of correctness and expertise. Before you act, you need to understand the 'how' and 'why,' and you excel at gathering information, assessing risks, and creating well-thought-out plans. You are disciplined and task-oriented, taking immense pride in producing work that is flawless and well-documented. People rely on you to catch errors that others miss and to bring a sense of order and logic to complex situations. Your greatest strengths are your attention to detail, your ability to think critically, and your commitment to maintaining high standards. You are not easily swayed by emotion; instead, you make decisions based on objective facts. You are the quality control expert of any team, ensuring that the final product is not just completed, but completed correctly.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Potential Areas for Improvement</h3>
+                        <p>Your commitment to quality is a major asset, but it can sometimes lead to 'analysis paralysis,' where you get so caught up in gathering data and perfecting a plan that you hesitate to make a final decision. This can slow down progress and frustrate more action-oriented colleagues. Your high standards can also manifest as being overly critical of yourself and others, and you may focus so much on what's wrong that you forget to acknowledge what's right. Because you are fact-driven, you may sometimes come across as emotionally distant or detached. To enhance your effectiveness, practice making decisions with 'good enough' information, recognizing that perfection is not always a practical goal. Set deadlines for your analysis phase to avoid getting stuck. Make a conscious effort to provide positive feedback and show appreciation for the work of others, not just pointing out flaws. Try to be more open about your own thought process so that others understand your rationale, which can make you seem more approachable. By learning to balance your quest for perfection with pragmatism, you can increase your speed and improve your collaborative relationships.</p>
+                    </div>
+                    <div class="result-section">
+                        <h3>Environments and Situations to Be Mindful Of</h3>
+                        <p>You are likely to feel uncomfortable and stressed in environments that are disorganized, chaotic, or require you to make frequent decisions with incomplete information. Roles that demand a lot of social interaction with little substance, or where feelings are valued more than facts, can be draining for you. Be wary of situations with unclear expectations, ambiguous instructions, or a lack of defined standards, as this will trigger your need for order and clarity. A work culture that is overly "touchy-feely" or rewards style over substance will likely frustrate you. You may also struggle when your work is subject to frequent, unplanned interruptions or when you are pressured to cut corners to meet a deadline. To thrive, seek out roles that allow you to leverage your analytical skills and attention to detail. You are at your best when you have autonomy over your tasks and can work within a clear, logical system. Look for positions in fields like engineering, finance, research, or quality assurance, where your precision is not just valued, but essential for success.</p>
+                    </div>`,
         },
       };
 
@@ -339,20 +569,28 @@
         questionText.textContent = `${index + 1}. ${q.question}`;
         questionBlock.appendChild(questionText);
 
-        for (const type in q.options) {
+        // Randomize options order
+        const optionsArray = Object.entries(q.options);
+        for (let i = optionsArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [optionsArray[i], optionsArray[j]] = [
+            optionsArray[j],
+            optionsArray[i],
+          ];
+        }
+
+        optionsArray.forEach(([type, text]) => {
           const label = document.createElement("label");
           label.className = "options-label";
-
           const radio = document.createElement("input");
           radio.type = "radio";
           radio.name = `q${index}`;
           radio.value = type;
           radio.required = true;
-
           label.appendChild(radio);
-          label.appendChild(document.createTextNode(` ${q.options[type]}`));
+          label.appendChild(document.createTextNode(` ${text}`));
           questionBlock.appendChild(label);
-        }
+        });
         quizForm.appendChild(questionBlock);
       });
 
@@ -379,7 +617,7 @@
         errorMessage.style.display = "none";
 
         let primaryTrait = "D";
-        let highestScore = 0;
+        let highestScore = -1;
         for (const type in scores) {
           if (scores[type] > highestScore) {
             highestScore = scores[type];
@@ -396,17 +634,13 @@
         const resultDescription = document.getElementById("resultDescription");
 
         scoreDisplay.innerHTML = `
-                <p class="result-score"><strong>Dominance (D):</strong> ${scores.D}</p>
-                <p class="result-score"><strong>Influence (I):</strong> ${scores.I}</p>
-                <p class="result-score"><strong>Steadiness (S):</strong> ${scores.S}</p>
-                <p class="result-score"><strong>Conscientiousness (C):</strong> ${scores.C}</p>
+                <p class="result-score"><strong>Dominance (D) Score:</strong> ${scores.D}</p>
+                <p class="result-score"><strong>Influence (I) Score:</strong> ${scores.I}</p>
+                <p class="result-score"><strong>Steadiness (S) Score:</strong> ${scores.S}</p>
+                <p class="result-score"><strong>Conscientiousness (C) Score:</strong> ${scores.C}</p>
             `;
 
-        const primaryDescription = descriptions[primaryTrait];
-        resultDescription.innerHTML = `
-                <h3>Your primary trait appears to be: ${primaryDescription.title}</h3>
-                <p>${primaryDescription.description}</p>
-            `;
+        resultDescription.innerHTML = descriptions[primaryTrait].report;
 
         resultsDiv.style.display = "block";
         resultsDiv.scrollIntoView({ behavior: "smooth" });
