@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expanded DISC Personality Assessment</title>
     <style>
-      /* All styles from the previous version remain the same */
+      /* General Styles */
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
@@ -13,7 +13,8 @@
         color: #333;
         line-height: 1.6;
         margin: 0;
-        padding: 20px;
+        /* Add padding to the bottom to prevent content from being hidden by the fixed progress bar */
+        padding: 20px 20px 100px 20px;
       }
       .quiz-container {
         max-width: 800px;
@@ -28,31 +29,49 @@
         text-align: center;
         color: #2c3e50;
       }
+
+      /* --- IMPROVEMENT 1: Floating Progress Bar --- */
       .progress-container {
-        width: 100%;
-        background-color: #e0e0e0;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 250px;
+        max-width: 90vw; /* Ensure it doesn't overflow on very small screens */
+        background-color: rgba(224, 224, 224, 0.9);
         border-radius: 25px;
-        margin-bottom: 25px;
         overflow: hidden;
+        z-index: 1000; /* Keep it on top of other content */
+        backdrop-filter: blur(
+          5px
+        ); /* Frosted glass effect for modern browsers */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       }
       #progressBar {
         width: 0%;
-        height: 18px;
+        height: 25px;
         background-color: #3498db;
         border-radius: 25px;
         text-align: center;
         color: white;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
-        line-height: 18px;
+        line-height: 25px;
         transition: width 0.4s ease-in-out;
       }
+
+      /* Quiz Styles */
       .question-block {
         margin-bottom: 25px;
         padding: 20px;
-        border: 1px solid #e0e0e0;
+        border: 2px solid #e0e0e0; /* Increased border width for highlight transition */
         border-radius: 8px;
         background-color: #fafafa;
+        transition: border-color 0.3s ease;
+      }
+      /* --- IMPROVEMENT 2: Highlight for unanswered questions --- */
+      .question-block.unanswered {
+        border-color: #c0392b; /* Red border for unanswered questions */
+        background-color: #fff5f5;
       }
       .question-text {
         font-weight: bold;
@@ -143,33 +162,29 @@
       .result-description p {
         text-align: justify;
       }
-
-      /* --- NEW: MOBILE-FRIENDLY IMPROVEMENTS --- */
       @media (max-width: 600px) {
         body {
-          padding: 10px;
-          /* USABLE: Prevents auto-zoom on iOS */
+          padding: 10px 10px 100px 10px;
           font-size: 16px;
         }
-
-        /* ENGAGING: Responsive Layout */
         .quiz-container {
           padding: 20px;
         }
-
         h1 {
           font-size: 1.5em;
         }
-
-        /* USABLE: Enlarge Touch Targets */
         .options-label {
           padding: 15px;
           font-size: 1.1em;
         }
-
         .btn {
           padding: 18px;
           font-size: 1.1em;
+        }
+        .progress-container {
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90vw;
         }
       }
     </style>
@@ -182,14 +197,12 @@
         like you.
       </p>
 
-      <div class="progress-container">
-        <div id="progressBar">0%</div>
-      </div>
-
-      <form id="discQuizForm"></form>
+      <form id="discQuizForm">
+        <!-- Questions will be dynamically inserted here -->
+      </form>
 
       <p id="errorMessage" class="error-message">
-        Please answer all questions before submitting.
+        Please answer all questions. The missing ones are highlighted in red.
       </p>
       <button type="button" class="btn submit-btn" id="submitBtn">
         Generate My Detailed Report
@@ -203,6 +216,11 @@
           Retake Quiz
         </button>
       </div>
+    </div>
+
+    <!-- Floating Progress Bar HTML -->
+    <div class="progress-container">
+      <div id="progressBar">0%</div>
     </div>
 
     <script>
@@ -656,15 +674,33 @@
       }
 
       function calculateResults() {
-        const totalQuestions = questions.length;
-        const answeredQuestions = quizForm.querySelectorAll(
-          'input[type="radio"]:checked'
-        ).length;
+        const allQuestionBlocks = quizForm.querySelectorAll(".question-block");
+        let unansweredQuestions = [];
 
-        if (answeredQuestions < totalQuestions) {
+        // --- IMPROVEMENT 2: Find, highlight, and track unanswered questions ---
+        allQuestionBlocks.forEach((block, index) => {
+          const radioChecked = block.querySelector(
+            `input[name="q${index}"]:checked`
+          );
+          if (!radioChecked) {
+            unansweredQuestions.push(block);
+            block.classList.add("unanswered");
+          } else {
+            block.classList.remove("unanswered");
+          }
+        });
+
+        if (unansweredQuestions.length > 0) {
           errorMessage.style.display = "block";
+          // Scroll to the first unanswered question
+          unansweredQuestions[0].scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
           return;
         }
+
+        // If all questions are answered, proceed
         errorMessage.style.display = "none";
 
         const scores = { D: 0, I: 0, S: 0, C: 0 };
@@ -704,6 +740,12 @@
         resultsDiv.style.display = "none";
         submitBtn.style.display = "block";
         errorMessage.style.display = "none";
+        // Remove all 'unanswered' highlights
+        quizForm
+          .querySelectorAll(".question-block.unanswered")
+          .forEach((block) => {
+            block.classList.remove("unanswered");
+          });
         updateProgress();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
