@@ -143,6 +143,35 @@
       .result-description p {
         text-align: justify;
       }
+
+      /* --- NEW: MOBILE-FRIENDLY IMPROVEMENTS --- */
+      @media (max-width: 600px) {
+        body {
+          padding: 10px;
+          /* USABLE: Prevents auto-zoom on iOS */
+          font-size: 16px;
+        }
+
+        /* ENGAGING: Responsive Layout */
+        .quiz-container {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.5em;
+        }
+
+        /* USABLE: Enlarge Touch Targets */
+        .options-label {
+          padding: 15px;
+          font-size: 1.1em;
+        }
+
+        .btn {
+          padding: 18px;
+          font-size: 1.1em;
+        }
+      }
     </style>
   </head>
   <body>
@@ -551,7 +580,6 @@
         },
       ];
 
-      // FIX: The full, detailed report text for each personality type is now included.
       const descriptions = {
         D: {
           title: "Dominance (D)",
